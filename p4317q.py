@@ -439,8 +439,7 @@ class P4317Q(object):
         :return: Data of bytes type if exist
         """
         self.__snd_cmd(self.__build_cmd(rw=rw, cmd=cmd, data=bytes(data)))
-        r = self.__parse_reply(cmd=cmd, reply=self.__rcv_reply())
-        return r
+        return self.__parse_reply(cmd=cmd, reply=self.__rcv_reply())
 
     def set_value(self, n, v=None, ud=None):
         """
@@ -1015,19 +1014,19 @@ class P4317Q(object):
 
 
 def get_func(args):
-    print(P4317Q(serial.Serial('/dev/ttyS0', 9600, timeout=1)).get_value(args.type[0]))
+    print(P4317Q(serial.Serial(args.device, 9600, timeout=1)).get_value(args.type[0]))
 
 
 def set_func(args):
-    P4317Q(serial.Serial('/dev/ttyS0', 9600, timeout=1)).set_value(args.type[0], v=args.value)
+    P4317Q(serial.Serial(args.device, 9600, timeout=1)).set_value(args.type[0], v=args.value)
 
 
 def up_func(args):
-    P4317Q(serial.Serial('/dev/ttyS0', 9600, timeout=1)).set_value(args.type[0], ud=UpDown.Up)
+    P4317Q(serial.Serial(args.device, 9600, timeout=1)).set_value(args.type[0], ud=UpDown.Up)
 
 
 def down_func(args):
-    P4317Q(serial.Serial('/dev/ttyS0', 9600, timeout=1)).set_value(args.type[0], ud=UpDown.Down)
+    P4317Q(serial.Serial(args.device, 9600, timeout=1)).set_value(args.type[0], ud=UpDown.Down)
 
 
 if __name__ == "__main__":
