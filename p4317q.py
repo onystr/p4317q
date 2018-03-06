@@ -1028,24 +1028,37 @@ def up_func(args):
 def down_func(args):
     P4317Q(serial.Serial(args.device, 9600, timeout=1)).set_value(args.type[0], ud=UpDown.Down)
 
-
-if __name__ == "__main__":
+def main():
+    """
+    Main Function
+    :return: None
+    """
+    # Setup Parser
     parser = argparse.ArgumentParser(description='DELL P4317Q Monitor Controller.', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--device', dest='device', default='/dev/ttyS0', help='serial device name.')
     parser.add_argument('--version', action='version', version='%(prog)s 1.0.0')
     subparsers = parser.add_subparsers(help="subcommand help")
-    parser_get = subparsers.add_parser('get', description='get value.', help='get value.')
+    parser_get = subparsers.add_parser('get', description='get value.', help='see `get --help`.')
     parser_get.add_argument('--type', nargs=1, metavar='TYPE', dest='type', help='setting type.', required=True)
     parser_get.set_defaults(func=get_func)
-    parser_set = subparsers.add_parser('set', description='set value.', help='set value.')
+    parser_set = subparsers.add_parser('set', description='set value.', help='see `set --help`.')
     parser_set.add_argument('--type', nargs=1, metavar='TYPE', dest='type', help='setting type.', required=True)
     parser_set.add_argument('--value', nargs=1, metavar='VALUE', dest='value', help='setting value.', required=True)
     parser_set.set_defaults(func=set_func)
-    parser_up = subparsers.add_parser('up', description='up value.', help='up value.')
+    parser_up = subparsers.add_parser('up', description='up value.', help='see `up --help`.')
     parser_up.add_argument('--type', nargs=1, metavar='TYPE', dest='type', help='setting type.', required=True)
     parser_up.set_defaults(func=up_func)
-    parser_down = subparsers.add_parser('down', description='down value.', help='down value.')
+    parser_down = subparsers.add_parser('down', description='down value.', help='see `down help`.')
     parser_down.add_argument('--type', nargs=1, metavar='TYPE', dest='type', help='setting type.', required=True)
     parser_down.set_defaults(func=down_func)
     args = parser.parse_args()
-    args.func(args)
+
+    # Execute Command
+    if hasattr(args, 'func'):
+        args.func(args)
+    else:
+        parser.print_help()
+
+
+if __name__ == "__main__":
+    main()
