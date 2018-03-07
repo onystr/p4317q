@@ -378,10 +378,10 @@ class P4317Q(object):
         # Add Command
         c.extend(cmd.value)
 
-        # Make Data
+        # Add Data
         c.extend(data)
 
-        # Make CheckSum
+        # Add CheckSum
         c.extend(self.__calc_check_sum(c))
 
         return c
@@ -421,7 +421,7 @@ class P4317Q(object):
         # Return Data if exist(Length if greater than 4)
         return None if ln < 4 else reply[6:ln+3]
 
-    def __query(self, rw, cmd, data=bytes()):
+    def query(self, rw, cmd, data=bytes()):
         """
         Query Command
         :param rw: Read or Write of ReadWrite type
@@ -482,7 +482,7 @@ class P4317Q(object):
         Get Assert Tag
         :return: Assert Tag of string type
         """
-        return str(self.__query(ReadWrite.Read, Command.AssertTag))
+        return str(self.query(ReadWrite.Read, Command.AssertTag))
 
     @property
     def monitor_name(self):
@@ -490,7 +490,7 @@ class P4317Q(object):
         Get Monitor Name
         :return: Monitor Name of string type
         """
-        return self.__query(ReadWrite.Read, Command.MonitorName).decode()
+        return self.query(ReadWrite.Read, Command.MonitorName).decode()
 
     @property
     def monitor_serial_number(self):
@@ -498,7 +498,7 @@ class P4317Q(object):
         Get Monitor Serial Number
         :return: Monitor Serial Number of bytes type
         """
-        return self.__query(ReadWrite.Read, Command.MonitorSerialNumber)
+        return self.query(ReadWrite.Read, Command.MonitorSerialNumber)
 
     @property
     def backlight_hours(self):
@@ -506,7 +506,7 @@ class P4317Q(object):
         Get Backlight Hours
         :return: Backlight Hours of int type
         """
-        return int.from_bytes(self.__query(ReadWrite.Read, Command.BacklightHours), endian)
+        return int.from_bytes(self.query(ReadWrite.Read, Command.BacklightHours), endian)
 
     # POWER MANAGEMENT
 
@@ -516,7 +516,7 @@ class P4317Q(object):
         Get Power State
         :return: Power State of State type
         """
-        return State(self.__query(ReadWrite.Read, Command.PowerState))
+        return State(self.query(ReadWrite.Read, Command.PowerState))
 
     @power_state.setter
     def power_state(self, v):
@@ -525,7 +525,7 @@ class P4317Q(object):
         :param v: Power State of State type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.PowerState, v.value)
+        self.query(ReadWrite.Write, Command.PowerState, v.value)
 
     @property
     def power_led(self):
@@ -533,7 +533,7 @@ class P4317Q(object):
         Get Power LED
         :return: Power LED of State type
         """
-        return State(self.__query(ReadWrite.Read, Command.PowerLED))
+        return State(self.query(ReadWrite.Read, Command.PowerLED))
 
     @power_led.setter
     def power_led(self, v):
@@ -542,7 +542,7 @@ class P4317Q(object):
         :param v: Power LED of State type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.PowerLED, v.value)
+        self.query(ReadWrite.Write, Command.PowerLED, v.value)
 
     @property
     def power_usb(self):
@@ -550,7 +550,7 @@ class P4317Q(object):
         Get Power USB
         :return: Power USB of State Type
         """
-        return State(self.__query(ReadWrite.Read, Command.PowerUSB))
+        return State(self.query(ReadWrite.Read, Command.PowerUSB))
 
     @power_usb.setter
     def power_usb(self, v):
@@ -559,14 +559,14 @@ class P4317Q(object):
         :param v: Power USB of State Type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.PowerUSB, v.value)
+        self.query(ReadWrite.Write, Command.PowerUSB, v.value)
 
     def reset_power(self):
         """
         Reset Power
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.ResetPower)
+        self.query(ReadWrite.Write, Command.ResetPower)
 
     # IMAGE ADJUSTMENT
 
@@ -576,7 +576,7 @@ class P4317Q(object):
         Get Brightness
         :return: Brightness of int type
         """
-        return int.from_bytes(self.__query(ReadWrite.Read, Command.Brightness), endian)
+        return int.from_bytes(self.query(ReadWrite.Read, Command.Brightness), endian)
 
     @brightness.setter
     def brightness(self, v):
@@ -587,7 +587,7 @@ class P4317Q(object):
         """
         if v not in range(0, 100):
             raise ValueError
-        self.__query(ReadWrite.Write, Command.Brightness, v.to_bytes(DataLength.Brightness, endian))
+        self.query(ReadWrite.Write, Command.Brightness, v.to_bytes(DataLength.Brightness, endian))
 
     @property
     def contrast(self):
@@ -595,7 +595,7 @@ class P4317Q(object):
         Get Contrast
         :return: Contrast of int type
         """
-        return int.from_bytes(self.__query(ReadWrite.Read, Command.Contrast), endian)
+        return int.from_bytes(self.query(ReadWrite.Read, Command.Contrast), endian)
 
     @contrast.setter
     def contrast(self, v):
@@ -606,7 +606,7 @@ class P4317Q(object):
         """
         if v not in range(0, 100):
             raise ValueError
-        self.__query(ReadWrite.Write, Command.Contrast, v.to_bytes(DataLength.Contrast, endian))
+        self.query(ReadWrite.Write, Command.Contrast, v.to_bytes(DataLength.Contrast, endian))
 
     @property
     def aspect_ratio(self):
@@ -614,16 +614,16 @@ class P4317Q(object):
         Get Aspect Ratio
         :return: Aspect Ratio of AspectRatio type
         """
-        return AspectRatio(self.__query(ReadWrite.Read, Command.AspectRatio))
+        return AspectRatio(self.query(ReadWrite.Read, Command.AspectRatio))
 
     @aspect_ratio.setter
     def aspect_ratio(self, v):
         """
         Set Aspect Ratio
-        :param v: Aspect Ratio of AspectRatio type
+       :param v: Aspect Ratio of AspectRatio type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.AspectRatio, v.value)
+        self.query(ReadWrite.Write, Command.AspectRatio, v.value)
 
     @property
     def sharpness(self):
@@ -631,7 +631,7 @@ class P4317Q(object):
         Get Sharpness
         :return: Sharpness of int type
         """
-        return int.from_bytes(self.__query(ReadWrite.Read, Command.Sharpness), endian)
+        return int.from_bytes(self.query(ReadWrite.Read, Command.Sharpness), endian)
 
     @sharpness.setter
     def sharpness(self, v):
@@ -640,7 +640,7 @@ class P4317Q(object):
         :param v: Sharpness of int type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.Sharpness, v.to_bytes(DataLength.Sharpness, endian))
+        self.query(ReadWrite.Write, Command.Sharpness, v.to_bytes(DataLength.Sharpness, endian))
 
     # COLOR MANAGEMENT
 
@@ -650,7 +650,7 @@ class P4317Q(object):
         Get Input Color Format
         :return: Color Format of ColorFormat type
         """
-        return ColorFormat(self.__query(ReadWrite.Read, Command.InputColorFormat))
+        return ColorFormat(self.query(ReadWrite.Read, Command.InputColorFormat))
 
     @input_color_format.setter
     def input_color_format(self, v):
@@ -659,7 +659,7 @@ class P4317Q(object):
         :param v: Color Format of ColorFormat type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.InputColorFormat, v.value)
+        self.query(ReadWrite.Write, Command.InputColorFormat, v.value)
 
     @property
     def color_preset_caps(self):
@@ -667,7 +667,7 @@ class P4317Q(object):
         Get Color Preset Capabilities
         :return: ???
         """
-        return self.__query(ReadWrite.Read, Command.ColorPresetCaps)
+        return self.query(ReadWrite.Read, Command.ColorPresetCaps)
 
     @property
     def color_preset(self):
@@ -675,7 +675,7 @@ class P4317Q(object):
         Get Color Preset
         :return: Color Preset of ColorPreset type
         """
-        return ColorPreset(self.__query(ReadWrite.Read, Command.ColorPreset))
+        return ColorPreset(self.query(ReadWrite.Read, Command.ColorPreset))
 
     @color_preset.setter
     def color_preset(self, v):
@@ -684,7 +684,7 @@ class P4317Q(object):
         :param v: Color Preset of ColorPreset type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.ColorPreset, v.value)
+        self.query(ReadWrite.Write, Command.ColorPreset, v.value)
 
     @property
     def custom_color(self):
@@ -692,7 +692,7 @@ class P4317Q(object):
         Get Custom Color
         :return: Custom Color of RGB type
         """
-        return RGB(rgb=self.__query(ReadWrite.Read, Command.CustomColor))
+        return RGB(rgb=self.query(ReadWrite.Read, Command.CustomColor))
 
     @custom_color.setter
     def custom_color(self, v):
@@ -701,14 +701,14 @@ class P4317Q(object):
         :param v: list of Custom Color
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.CustomColor, v.to_bytes())
+        self.query(ReadWrite.Write, Command.CustomColor, v.to_bytes())
 
     def reset_color(self):
         """
         Reset Color
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.ResetColor)
+        self.query(ReadWrite.Write, Command.ResetColor)
 
     # VIDEO INPUT MANAGEMENT
 
@@ -718,7 +718,7 @@ class P4317Q(object):
         Get Auto Select
         :return: Auto Select of State type
         """
-        return State(self.__query(ReadWrite.Read, Command.AutoSelect))
+        return State(self.query(ReadWrite.Read, Command.AutoSelect))
 
     @auto_select.setter
     def auto_select(self, v):
@@ -727,7 +727,7 @@ class P4317Q(object):
         :param v: Auto Select of State type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.AutoSelect, v.value)
+        self.query(ReadWrite.Write, Command.AutoSelect, v.value)
 
     @property
     def video_input_caps(self):
@@ -735,7 +735,7 @@ class P4317Q(object):
         Get Video Input Capabilities
         :return: ???
         """
-        return self.__query(ReadWrite.Read, Command.VideoInputCaps)
+        return self.query(ReadWrite.Read, Command.VideoInputCaps)
 
     @property
     def video_input(self):
@@ -743,7 +743,7 @@ class P4317Q(object):
         Get Video Input
         :return: Video Input of VideoInput type
         """
-        return VideoInput(self.__query(ReadWrite.Read, Command.VideoInput))
+        return VideoInput(self.query(ReadWrite.Read, Command.VideoInput))
 
     @video_input.setter
     def video_input(self, v):
@@ -752,7 +752,7 @@ class P4317Q(object):
         :param v: Video Input of VideoInput type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.VideoInput, v.value)
+        self.query(ReadWrite.Write, Command.VideoInput, v.value)
 
     # PIP/PBP MANAGEMENT
 
@@ -762,7 +762,7 @@ class P4317Q(object):
         Get PxP Mode
         :return: PxP Mode of PxPMode type
         """
-        return State(self.__query(ReadWrite.Read, Command.PxPMode))
+        return State(self.query(ReadWrite.Read, Command.PxPMode))
 
     @pxp_mode.setter
     def pxp_mode(self, v):
@@ -771,7 +771,7 @@ class P4317Q(object):
         :param v: PxP Mode of PxPMode type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.PxPMode, v.value)
+        self.query(ReadWrite.Write, Command.PxPMode, v.value)
 
     def get_pxp_sub_input(self, win):
         """
@@ -779,7 +779,7 @@ class P4317Q(object):
         :param win: Window of Window type to Get
         :return: PxP Sub Input of VideoInput type
         """
-        return VideoInput(self.__query(ReadWrite.Read, Command.PxPSubInput, win.value))
+        return VideoInput(self.query(ReadWrite.Read, Command.PxPSubInput, win.value))
 
     @property
     def pxp_sub_input_win1(self):
@@ -820,7 +820,7 @@ class P4317Q(object):
         :param v: PxP Sub Input of VideoInput type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.PxPSubInput, bytearray().join(win.value).join(v.value))
+        self.query(ReadWrite.Write, Command.PxPSubInput, bytearray().join(win.value).join(v.value))
 
     @pxp_sub_input_win1.setter
     def pxp_sub_input_win1(self, v):
@@ -864,7 +864,7 @@ class P4317Q(object):
         Get PxP Location
         :return: PxP Location of PxPLocation type
         """
-        return PxPLocation(self.__query(ReadWrite.Read, Command.PxPLocation))
+        return PxPLocation(self.query(ReadWrite.Read, Command.PxPLocation))
 
     @pxp_location.setter
     def pxp_location(self, v):
@@ -873,7 +873,7 @@ class P4317Q(object):
         :param v: PxP Location of PxPLocation type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.PxPLocation, v.value)
+        self.query(ReadWrite.Write, Command.PxPLocation, v.value)
 
     # OSD MANAGEMENT
 
@@ -883,7 +883,7 @@ class P4317Q(object):
         Get OSD Transparency
         :return: OSD Transparency of int type
         """
-        return int.from_bytes(self.__query(ReadWrite.Read, Command.OSDTransparency), endian)
+        return int.from_bytes(self.query(ReadWrite.Read, Command.OSDTransparency), endian)
 
     @osd_transparency.setter
     def osd_transparency(self, v):
@@ -894,7 +894,7 @@ class P4317Q(object):
         """
         if v not in range(0, 100):
             raise ValueError
-        self.__query(ReadWrite.Write, Command.OSDTransparency, v.to_bytes(DataLength.OSDTransparency, endian))
+        self.query(ReadWrite.Write, Command.OSDTransparency, v.to_bytes(DataLength.OSDTransparency, endian))
 
     @property
     def osd_language(self):
@@ -902,7 +902,7 @@ class P4317Q(object):
         Get OSD Language
         :return: OSD Language of Language type
         """
-        return Language(self.__query(ReadWrite.Read, Command.OSDLanguage))
+        return Language(self.query(ReadWrite.Read, Command.OSDLanguage))
 
     @osd_language.setter
     def osd_language(self, v):
@@ -911,7 +911,7 @@ class P4317Q(object):
         :param v: LSD Language of Language type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.OSDLanguage, v.value)
+        self.query(ReadWrite.Write, Command.OSDLanguage, v.value)
 
     @property
     def osd_timer(self):
@@ -919,7 +919,7 @@ class P4317Q(object):
         Get OSD Timer
         :return: OSD Time of int type
         """
-        return int.from_bytes(self.__query(ReadWrite.Read, Command.OSDTimer), endian)
+        return int.from_bytes(self.query(ReadWrite.Read, Command.OSDTimer), endian)
 
     @osd_timer.setter
     def osd_timer(self, v):
@@ -930,7 +930,7 @@ class P4317Q(object):
         """
         if v not in range(5, 60):
             raise ValueError
-        self.__query(ReadWrite.Write, Command.OSDTimer, v.to_bytes(DataLength.OSDTimer, endian))
+        self.query(ReadWrite.Write, Command.OSDTimer, v.to_bytes(DataLength.OSDTimer, endian))
 
     @property
     def osd_button_lock(self):
@@ -938,7 +938,7 @@ class P4317Q(object):
         Get OSD Button Lock
         :return: OSD Button Lock of State type
         """
-        return State(self.__query(ReadWrite.Read, Command.OSDButtonLock))
+        return State(self.query(ReadWrite.Read, Command.OSDButtonLock))
 
     @osd_button_lock.setter
     def osd_button_lock(self, v):
@@ -947,14 +947,14 @@ class P4317Q(object):
         :param v: OSD Button Lock of State type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.OSDButtonLock, v.value)
+        self.query(ReadWrite.Write, Command.OSDButtonLock, v.value)
 
     def reset_osd(self):
         """
         Reset OSD
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.ResetOSD)
+        self.query(ReadWrite.Write, Command.ResetOSD)
 
     # SYSTEM MANAGEMENT
 
@@ -964,7 +964,7 @@ class P4317Q(object):
         Get Version Firmware
         :return: Version Firmware of string type
         """
-        return str(self.__query(ReadWrite.Read, Command.VersionFirmware))
+        return str(self.query(ReadWrite.Read, Command.VersionFirmware))
 
     @property
     def ddcci(self):
@@ -972,7 +972,7 @@ class P4317Q(object):
         Get DDCCI
         :return: DDCCI of State type
         """
-        return State(self.__query(ReadWrite.Read, Command.DDCCI))
+        return State(self.query(ReadWrite.Read, Command.DDCCI))
 
     @ddcci.setter
     def ddcci(self, v):
@@ -981,7 +981,7 @@ class P4317Q(object):
         :param v: DDCCI of State type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.DDCCI, v.value)
+        self.query(ReadWrite.Write, Command.DDCCI, v.value)
 
     @property
     def lcd_conditioning(self):
@@ -989,7 +989,7 @@ class P4317Q(object):
         Get LCD Conditioning
         :return: LCD Conditioning of State type
         """
-        return State(self.__query(ReadWrite.Read, Command.LCDConditioning))
+        return State(self.query(ReadWrite.Read, Command.LCDConditioning))
 
     @lcd_conditioning.setter
     def lcd_conditioning(self, v):
@@ -998,14 +998,14 @@ class P4317Q(object):
         :param v: LCD Conditioning of State type
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.LCDConditioning, v.value)
+        self.query(ReadWrite.Write, Command.LCDConditioning, v.value)
 
     def factory_reset(self):
         """
         Factory Reset
         :return: None
         """
-        self.__query(ReadWrite.Write, Command.FactoryReset)
+        self.query(ReadWrite.Write, Command.FactoryReset)
 
 
 def get_func(args):
@@ -1024,6 +1024,19 @@ def down_func(args):
     P4317Q(s=args.device).set_value(args.type[0], ud=UpDown.Down)
 
 
+def search_func(args):
+    class FakeCommand(object):
+        def __init__(self, v):
+            self.value = v
+
+    p4317q = P4317Q(s=args.device)
+    for c in range(0, 0xff):
+        try:
+            print('{} : {}'.format(hex(c), p4317q.query(rw=ReadWrite.Read, cmd=FakeCommand(bytes([c])))))
+        except P4317qError:
+            pass
+
+
 def main():
     """
     Main Function
@@ -1033,20 +1046,22 @@ def main():
     parser = argparse.ArgumentParser(description='DELL P4317Q Monitor Controller.', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--device', dest='device', default='/dev/ttyS0', help='serial device name.')
     parser.add_argument('--version', action='version', version='%(prog)s 1.0.0')
-    subparsers = parser.add_subparsers(help="subcommand help")
-    parser_get = subparsers.add_parser('get', description='get value.', help='see `get --help`.')
+    subparsers = parser.add_subparsers()
+    parser_get = subparsers.add_parser('get', description='get value.')
     parser_get.add_argument('--type', nargs=1, metavar='TYPE', dest='type', help='setting type.', required=True)
     parser_get.set_defaults(func=get_func)
-    parser_set = subparsers.add_parser('set', description='set value.', help='see `set --help`.')
+    parser_set = subparsers.add_parser('set', description='set value.',)
     parser_set.add_argument('--type', nargs=1, metavar='TYPE', dest='type', help='setting type.', required=True)
     parser_set.add_argument('--value', nargs=1, metavar='VALUE', dest='value', help='setting value.', required=True)
     parser_set.set_defaults(func=set_func)
-    parser_up = subparsers.add_parser('up', description='up value.', help='see `up --help`.')
+    parser_up = subparsers.add_parser('up', description='up value.')
     parser_up.add_argument('--type', nargs=1, metavar='TYPE', dest='type', help='setting type.', required=True)
     parser_up.set_defaults(func=up_func)
-    parser_down = subparsers.add_parser('down', description='down value.', help='see `down help`.')
+    parser_down = subparsers.add_parser('down', description='down value.')
     parser_down.add_argument('--type', nargs=1, metavar='TYPE', dest='type', help='setting type.', required=True)
     parser_down.set_defaults(func=down_func)
+    parser_search = subparsers.add_parser('search')
+    parser_search.set_defaults(func=search_func)
     args = parser.parse_args()
 
     # Execute Command
