@@ -449,8 +449,8 @@ class P4317Q(object):
             new = v
         elif ud is not None:
             old = eval('self.{}'.format(n))
-            t = old.__class__.__name__
-            if t == 'int':
+            type = old.__class__.__name__
+            if type == 'int':
                 new = old + ud.value
                 try:
                     exec('self.{}={}'.format(n, new))
@@ -458,9 +458,9 @@ class P4317Q(object):
                     new = old
             else:
                 try:
-                    new = eval('{}(list({})[list({}).index(old)+ud.value])'.format(t, t, t))
+                    new = eval('{}(list({})[list({}).index(old)+ud.value])'.format(type, type, type))
                 except IndexError:
-                    new = eval('{}[0] if 0 <= ud.value else {}[-1]'.format(t, t))
+                    new = eval('{}[0] if 0 <= ud.value else {}[-1]'.format(type, type))
                 exec('self.{}={}'.format(n, new))
         else:
             raise ValueError
@@ -1043,7 +1043,8 @@ def main():
     :return: None
     """
     # Setup Parser
-    parser = argparse.ArgumentParser(description='DELL P4317Q Monitor Controller.', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(description='DELL P4317Q Monitor Controller.',
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--device', dest='device', default='/dev/ttyS0', help='serial device name.')
     parser.add_argument('--version', action='version', version='%(prog)s 1.0.0')
     subparsers = parser.add_subparsers()
